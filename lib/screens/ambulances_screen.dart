@@ -3,46 +3,44 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:raktadaan/modal_class/donor.dart';
+import 'package:raktadaan/modal_class/ambulance.dart';
 import 'package:http/http.dart' as http;
 import 'package:raktadaan/screens/single_message.dart';
 import 'package:web_socket_channel/io.dart';
 
-class FindDonorsPage extends StatefulWidget {
-  final String userId, bloodGrp, gender;
-  FindDonorsPage({this.userId, this.bloodGrp, this.gender});
+class AmbulancesPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return FindDonorsPageState();
+    return AmbulancesPageState();
   }
 }
 
-class FindDonorsPageState extends State<FindDonorsPage> {
-  final findDonorsPageScaffoldKey = GlobalKey<ScaffoldState>();
+class AmbulancesPageState extends State<AmbulancesPage> {
+  final ambulancesPageScaffoldKey = GlobalKey<ScaffoldState>();
   GoogleMapController mapController;
   bool mapToggle = false;
-  List<Donor> list = List();
+  List<Ambulance> list = List();
   bool isLoading = true;
-  bool noDonors = false;
+  bool noAmbulances = false;
   var currentLocation;
   List<LatLng> markers = List();
-  void _upload() {
-    http.post('http://192.168.137.46:3000/search_donor', body: {
-      "userid": widget.userId,
-      "long": currentLocation.longitude.toString(),
-      "lat": currentLocation.latitude.toString(),
-      "blood_grp": widget.bloodGrp,
-      "gender": widget.gender
-    }).then((res) {
-      print(res.statusCode);
-      list = (json.decode(res.body) as List)
-          .map((data) => Donor.fromJson(data))
+  var places = ['Arghakhachi', 'Gulmi', 'Illam'];
+  String selectedPlace = 'Gulmi';
+  LatLng argLoc = LatLng(27.944839, 83.092367);
+  LatLng gulLoc = LatLng(28.089279, 83.275836);
+  LatLng ilLoc = LatLng(26.900164, 87.926750);
+
+  _fetchData() async {
+    final response = await http
+        .get("http://192.168.137.46:3000/getambulance");
+    if (response.statusCode == 200) {
+      list = (json.decode(response.body) as List)
+          .map((data) => Ambulance.fromJson(data))
           .toList();
       if (this.mounted) {
         if (list.length == 0) {
           setState(() {
-            noDonors = true;
+            noAmbulances = true;
           });
         } else {
           setState(() {
@@ -51,62 +49,31 @@ class FindDonorsPageState extends State<FindDonorsPage> {
           });
         }
       }
-    }).catchError((err) {
-      print('ma call bhaye');
-      print(err);
-      setState(() {
-        isLoading = false;
-        noDonors = true;
-      });
-    });
+    } else {
+      throw Exception('Failed to load photos');
+    }
   }
-
-  // _fetchData() async {
-  //   final response = await http.get(
-  //       "http://192.168.137.46:3000/search_donor?long=85.335270&lat=27.688203");
-  //   if (response.statusCode == 200) {
-  //     list = (json.decode(response.body) as List)
-  //         .map((data) => Donor.fromJson(data))
-  //         .toList();
-  //     if (this.mounted) {
-  //       if (list.length == 0) {
-  //         setState(() {
-  //           noDonors = true;
-  //         });
-  //       } else {
-  //         setState(() {
-  //           mapToggle = true;
-  //           print(list.length);
-  //         });
-  //       }
-  //     }
-  //   } else {
-  //     throw Exception('Failed to load photos');
-  //   }
-  // }
 
   @override
   void initState() {
     super.initState();
-    Geolocator().getLastKnownPosition().then((curloc) {
-      currentLocation = curloc;
-      //_fetchData();
-      _upload();
-      //_showBottomSheet();
-    });
+    // Geolocator().getLastKnownPosition().then((curloc) {
+    //   currentLocation = curloc;
+      
+    // });
+    _fetchData();
   }
 
   @override
   void dispose() {
     mapController?.onMarkerTapped?.remove(_onMarkerTapped);
-
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: findDonorsPageScaffoldKey,
+      key: ambulancesPageScaffoldKey,
       appBar: myAppBar(),
       body: myBody(),
     );
@@ -115,7 +82,10 @@ class FindDonorsPageState extends State<FindDonorsPage> {
   //All the widget definitions
   Widget myAppBar() {
     return AppBar(
-      title: Text("Find Donors"),
+      title: Text("Ambulances"),
+      actions: <Widget>[
+        bloodDropDown()
+      ],
     );
   }
 
@@ -125,21 +95,21 @@ class FindDonorsPageState extends State<FindDonorsPage> {
         color: Color(0xFFC21807),
         width: double.infinity,
         height: double.infinity,
-        child: noDonors
-            ? noDonorsFound()
+        child: noAmbulances
+            ? noAmbulancesFound()
             : mapToggle
                 ? GoogleMap(
                     onMapCreated: _onMapCreated,
                     options: GoogleMapOptions(
                       mapType: MapType.normal,
-                      myLocationEnabled: true,
                       trackCameraPosition: true,
                       cameraPosition: CameraPosition(
-                        target: currentLocation == null
-                            ? LatLng(27.7172, 85.3240)
-                            : LatLng(currentLocation.latitude,
-                                currentLocation.longitude),
-                        zoom: 12.0,
+                        target: selectedPlace == 'Arghakhachi'
+                            ? argLoc
+                            : selectedPlace == 'Illam'?
+                            ilLoc:
+                                gulLoc,
+                        zoom: 13.0,
                       ),
                     ),
                   )
@@ -149,8 +119,47 @@ class FindDonorsPageState extends State<FindDonorsPage> {
                     ),
                   ));
   }
+    Widget bloodDropDown() {
+    return Theme(
+      data: ThemeData(
+        canvasColor: Color(0xFFC21807),
+      ),
+      child: DropdownButton<String>(
+        hint: Text('Select your blood type'),
+        style: TextStyle(
+            color: Colors.white, fontFamily: 'Open Sans', fontSize: 16),
+        items: places.map((String dropDownStringItem) {
+          return DropdownMenuItem(
+            value: dropDownStringItem,
+            child: Container(
+                child: Text(
+              dropDownStringItem,
+              style: TextStyle(fontFamily: 'Open Sans'),
+            )),
+          );
+        }).toList(),
+        onChanged: (String selectedBlood) {
+          setState(() {
+            selectedPlace = selectedBlood;
+          });
+          mapController.animateCamera(
+                CameraUpdate.newCameraPosition(
+                  CameraPosition(
+                      target:  selectedPlace == 'Arghakhachi'
+                            ? argLoc
+                            : selectedPlace == 'Illam'?
+                            ilLoc:
+                                gulLoc,
+                       zoom: 13.0),
+                ),
+              );
+        },
+        value: selectedPlace,
+      ),
+    );
+  }
 
-  Widget noDonorsFound() {
+  Widget noAmbulancesFound() {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -165,7 +174,7 @@ class FindDonorsPageState extends State<FindDonorsPage> {
             ),
           ),
           Text(
-            "Sorry no donors found.",
+            "Sorry no Ambulances found.",
             style: TextStyle(
                 color: Colors.white,
                 fontSize: 18.0,
@@ -190,11 +199,10 @@ class FindDonorsPageState extends State<FindDonorsPage> {
             ),
             onPressed: () {
               setState(() {
-                noDonors = false;
+                noAmbulances = false;
                 isLoading = true;
               });
-              //_fetchData();
-              _upload();
+              _fetchData();
             },
           ),
         ],
@@ -232,11 +240,13 @@ class FindDonorsPageState extends State<FindDonorsPage> {
 
   showPicker(int selectedIndex) {
     showDialog(
+      
         context: context,
         barrierDismissible: true,
         builder: (BuildContext context) {
           return AlertDialog(
-            //title: Center(child: Text('Donor Derails')),
+            
+            //title: Center(child: Text('Ambulance Derails')),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
@@ -244,7 +254,7 @@ class FindDonorsPageState extends State<FindDonorsPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Text(
-                      'Donor Details',
+                      'Ambulance Details',
                       style: TextStyle(
                           color: Colors.black,
                           fontFamily: 'Open Sans',
@@ -263,7 +273,7 @@ class FindDonorsPageState extends State<FindDonorsPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     Text(
-                      'Respect : ',
+                      'Number : ',
                       style: TextStyle(
                           color: Colors.black,
                           fontFamily: 'Open Sans',
@@ -271,28 +281,7 @@ class FindDonorsPageState extends State<FindDonorsPage> {
                           fontSize: 18),
                     ),
                     Text(
-                      '${list[selectedIndex].credits}',
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontFamily: 'Open Sans',
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18),
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    Text(
-                      'Gender : ',
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontFamily: 'Open Sans',
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18),
-                    ),
-                    Text(
-                      '${list[selectedIndex].gender}',
+                      '${list[selectedIndex].number}',
                       style: TextStyle(
                           color: Colors.black,
                           fontFamily: 'Open Sans',
@@ -305,7 +294,7 @@ class FindDonorsPageState extends State<FindDonorsPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     Text(
-                      'Blood Group : ',
+                      'Available : ',
                       style: TextStyle(
                           color: Colors.black,
                           fontFamily: 'Open Sans',
@@ -313,12 +302,36 @@ class FindDonorsPageState extends State<FindDonorsPage> {
                           fontSize: 18),
                     ),
                     Text(
-                      '${list[selectedIndex].bloodGrp}',
+                      '${list[selectedIndex].online}',
                       style: TextStyle(
                           color: Colors.black,
                           fontFamily: 'Open Sans',
                           fontWeight: FontWeight.bold,
                           fontSize: 18),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Text(
+                      'Distance : ',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontFamily: 'Open Sans',
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18),
+                    ),
+                    Container(
+                      width: 100,
+                      child: Text(
+                        '${list[selectedIndex].name}',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontFamily: 'Open Sans',
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18),
+                      ),
                     ),
                   ],
                 ),
@@ -329,6 +342,7 @@ class FindDonorsPageState extends State<FindDonorsPage> {
                       icon: Icon(Icons.phone),
                       onPressed: () {
                         Navigator.pop(context);
+                        //launch("tel://9862166357");
                       },
                     ),
                     IconButton(

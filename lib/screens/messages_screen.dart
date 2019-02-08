@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:raktadaan/modal_class/chat_modal.dart';
 import 'package:raktadaan/screens/single_message.dart';
+import 'package:web_socket_channel/io.dart';
 
 
 class MessagesPage extends StatefulWidget {
@@ -9,45 +10,47 @@ class MessagesPage extends StatefulWidget {
 }
 
 class _MessagesPageState extends State<MessagesPage> {
-
-
-  Widget messages(){
-        return new ListView.builder(
+  Widget messages() {
+    return  ListView.builder(
       itemCount: dummyData.length,
-      itemBuilder: (context, i) => new Column(
+      itemBuilder: (context, i) =>  Column(
             children: <Widget>[
-              new Divider(
-                height: 10.0,
-              ),
-              new ListTile(
-                onTap: (){
-                  Navigator.push(context, MaterialPageRoute(
-                    builder: (context)=> ChatScreen()
-                  ));
+               ListTile(
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => ChatScreen(
+                        channel: IOWebSocketChannel.connect(
+                          'ws://192.168.137.46:8080/foo'),
+                          sendId: '2',
+                      )));
                 },
-                leading: new CircleAvatar(
+                leading:  CircleAvatar(
                   foregroundColor: Theme.of(context).primaryColor,
                   backgroundColor: Colors.grey,
-                  backgroundImage: new NetworkImage(dummyData[i].avatarUrl),
+                  backgroundImage:  AssetImage('assets/images/face1.jpeg'),
                 ),
-                title: new Row(
+                title:  Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    new Text(
+                     Text(
                       dummyData[i].name,
-                      style: new TextStyle(fontWeight: FontWeight.bold,fontSize: 18,color: Colors.white),
+                      style:  TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                          color: Colors.white),
                     ),
-                    new Text(
+                     Text(
                       dummyData[i].time,
-                      style: new TextStyle(color: Colors.white70, fontSize: 14.0),
+                      style:
+                           TextStyle(color: Colors.white70, fontSize: 14.0),
                     ),
                   ],
                 ),
-                subtitle: new Container(
+                subtitle:  Container(
                   padding: const EdgeInsets.only(top: 5.0),
-                  child: new Text(
+                  child:  Text(
                     dummyData[i].message,
-                    style: new TextStyle(color: Colors.white54, fontSize: 15.0),
+                    style:  TextStyle(color: Colors.white54, fontSize: 15.0),
                   ),
                 ),
               )
@@ -55,14 +58,17 @@ class _MessagesPageState extends State<MessagesPage> {
           ),
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Messages'),
       ),
-      body: Container(color: Colors.blue,
-      child: messages(),),
+      body: Container(
+        color: Color(0xFFC21807),
+        child: messages(),
+      ),
     );
   }
 }

@@ -12,7 +12,7 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
   // My IPv4 : 192.168.43.171
   final String phpEndPoint = 'http://192.168.43.171/phpAPI/image.php';
-  final String nodeEndPoint = 'http://192.168.137.1:3000/image';
+  final String nodeEndPoint = 'http://192.168.137.46:3000/image';
   File file;
 
   void _choose() async {
