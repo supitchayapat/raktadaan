@@ -97,8 +97,7 @@ class HomePageState extends State<HomePage> {
       actions: <Widget>[
         IconButton(
           onPressed: () {
-            // Navigator.push(context,
-            //     MaterialPageRoute(builder: (context) => MessagesPage()));
+            
           },
           icon: Icon(Icons.message),
         )
@@ -121,7 +120,7 @@ class HomePageState extends State<HomePage> {
                 ),
               ),
               child: CircleAvatar(
-                backgroundImage: (isLoggedIn == null && userId == null)
+                backgroundImage: (isLoggedIn == false || userId == null)
                     ? AssetImage('assets/images/face1.jpeg')
                     : NetworkImage(
                         'http://192.168.137.46:3000/${userId.toString()}profile.jpg'),
@@ -490,12 +489,18 @@ class _BloodPickerState extends State<BloodPicker> {
     } else {
       gender = 'female';
     }
+    int userId;
+    if(widget.userId == null){
+      userId = 0;
+    }else{
+      userId = widget.userId;
+    }
     Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => FindDonorsPage(
                   bloodGrp: selectedBloodGroup,
-                  userId: widget.userId.toString(),
+                  userId: userId.toString(),
                   gender: gender,
                 )));
   }

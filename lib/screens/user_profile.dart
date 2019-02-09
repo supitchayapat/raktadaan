@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:raktadaan/screens/login_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -19,10 +21,17 @@ class UserProfileState extends State<UserProfile> {
   int userId, credits;
 
   _setData() async {
+    willDonate = preferences.getBool('online');
     final response = await http
         .get("http://192.168.137.46:3000/willchanger?user_id=$userId");
     if (response.statusCode == 200) {
       print('successful');
+      preferences.setBool('online', !willDonate);
+      if (this.mounted) {
+        setState(() {
+          willDonate = !willDonate;
+        });
+      }
     } else {
       print('Error');
     }
@@ -44,7 +53,9 @@ class UserProfileState extends State<UserProfile> {
       credits = preferences.getInt('userCredit');
       name = preferences.getString('userName');
       phoneNumber = preferences.getString('userPhone');
-      willDonate = preferences.getBool('willDonate') ?? true;
+      willDonate = preferences.getBool('online');
+      setState(() {});
+    } else {
       setState(() {});
     }
   }
@@ -221,11 +232,6 @@ class UserProfileState extends State<UserProfile> {
                                         inactiveThumbColor: Colors.red,
                                         onChanged: (bool value) {
                                           _setData();
-                                          preferences.setBool(
-                                              'willDonate', value);
-                                          setState(() {
-                                            willDonate = value;
-                                          });
                                         }),
                                   ],
                                 )
@@ -318,15 +324,55 @@ class UserProfileState extends State<UserProfile> {
           : isLoggedIn
               ? profileBody()
               : Container(
+                  width: double.infinity,
                   color: Color(0xFFC21807),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Text('Log in to continue'),
+                      SizedBox(
+                        width: 100,
+                        height: 100,
+                        child: Icon(
+                          FontAwesomeIcons.lock,
+                          size: 100,
+                          color: Colors.white,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Log in to continue',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: 'Open Sans',
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
                       RaisedButton(
-                        child: Text('Sign In'),
-                        onPressed: () {},
-                      )
+                        color: Colors.purple,
+                        shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.0))),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10.0, horizontal: 42.0),
+                          child: Text(
+                            'SIGN IN',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20.0,
+                                fontFamily: 'Open Sans',
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => LoginPage()));
+                        },
+                      ),
                     ],
                   ),
                 ),

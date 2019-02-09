@@ -14,7 +14,7 @@ class Donor {
       longitude: json['longitude'],
       credits: json['credits'],
       bloodGrp: json['blood_grp'],
-      gender: json['gender']
+      gender: json['gender'],
     );
   }
 }

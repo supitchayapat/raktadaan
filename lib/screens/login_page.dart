@@ -46,6 +46,7 @@ class _LoginPageState extends State<LoginPage>
         preferences.setInt('userCredit', user['credits']);
         preferences.setString('userName', user['name']);
         preferences.setBool('isLoggedIn', true);
+        preferences.setBool('online', user['online']);
         preferences.setString('userPhone', username);
         Navigator.of(context)
             .pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
@@ -336,7 +337,8 @@ class _LoginPageState extends State<LoginPage>
                 padding: EdgeInsets.only(top: 10.0),
                 child: FlatButton(
                     onPressed: () {
-                      print('pressed skip');
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                          '/home', (Route<dynamic> route) => false);
                     },
                     child: Text(
                       "Skip this step",
@@ -484,7 +486,8 @@ class _LoginPageState extends State<LoginPage>
                 padding: EdgeInsets.only(top: 10.0),
                 child: FlatButton(
                     onPressed: () {
-                      print('pressed skip');
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                          '/home', (Route<dynamic> route) => false);
                     },
                     child: Text(
                       "Skip this step",
