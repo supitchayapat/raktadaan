@@ -17,6 +17,7 @@ dependencies:
   font_awesome_flutter:
   shared_preferences:
   qr_flutter:
+  qr_reader:
   
 
 dev_dependencies:

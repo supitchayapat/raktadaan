@@ -6,6 +6,7 @@ import 'package:raktadaan/screens/donate_screen.dart';
 import 'package:raktadaan/screens/events_page.dart';
 import 'package:raktadaan/screens/find_donors.dart';
 import 'package:raktadaan/screens/user_profile.dart';
+import 'package:raktadaan/test/test.dart';
 import 'package:raktadaan/widgets/custom_curve.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -97,7 +98,8 @@ class HomePageState extends State<HomePage> {
       actions: <Widget>[
         IconButton(
           onPressed: () {
-            
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => TestPage()));
           },
           icon: Icon(Icons.message),
         )
@@ -157,12 +159,14 @@ class HomePageState extends State<HomePage> {
                     icon: Icon(FontAwesomeIcons.searchLocation),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(8.0))),
-                    label: Text('Find Donors',
-                    style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 18.0,
-                            fontFamily: 'Open Sans',
-                            fontWeight: FontWeight.bold),),
+                    label: Text(
+                      'Find Donors',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 18.0,
+                          fontFamily: 'Open Sans',
+                          fontWeight: FontWeight.bold),
+                    ),
                     onPressed: () {
                       showPicker();
                     },
@@ -490,9 +494,9 @@ class _BloodPickerState extends State<BloodPicker> {
       gender = 'female';
     }
     int userId;
-    if(widget.userId == null){
+    if (widget.userId == null) {
       userId = 0;
-    }else{
+    } else {
       userId = widget.userId;
     }
     Navigator.push(
