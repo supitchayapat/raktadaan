@@ -28,7 +28,7 @@ class FindDonorsPageState extends State<FindDonorsPage> {
   var currentLocation;
   List<LatLng> markers = List();
   void _upload() {
-    http.post('http://192.168.137.46:3000/search_donor', body: {
+    http.post('http://192.168.137.169:3000/search_donor', body: {
       "userid": widget.userId,
       "long": currentLocation.longitude.toString(),
       "lat": currentLocation.latitude.toString(),
@@ -63,7 +63,7 @@ class FindDonorsPageState extends State<FindDonorsPage> {
 
   // _fetchData() async {
   //   final response = await http.get(
-  //       "http://192.168.137.46:3000/search_donor?long=85.335270&lat=27.688203");
+  //       "http://192.168.137.169:3000/search_donor?long=85.335270&lat=27.688203");
   //   if (response.statusCode == 200) {
   //     list = (json.decode(response.body) as List)
   //         .map((data) => Donor.fromJson(data))
@@ -122,7 +122,7 @@ class FindDonorsPageState extends State<FindDonorsPage> {
   //This is body
   Widget myBody() {
     return Container(
-        color: Color(0xFFC21807),
+        color: Theme.of(context).primaryColor,
         width: double.infinity,
         height: double.infinity,
         child: noDonors

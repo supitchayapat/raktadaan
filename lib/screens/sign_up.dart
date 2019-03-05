@@ -5,8 +5,11 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:raktadaan/screens/terms.dart';
 
 class SignUpPage extends StatefulWidget {
+  final String name, number;
+  SignUpPage({this.name, this.number});
   @override
   _SignUpPageState createState() => _SignUpPageState();
 }
@@ -21,8 +24,9 @@ class _SignUpPageState extends State<SignUpPage> {
   final passwordController = TextEditingController();
   bool isLoading = false;
   bool _obscurePassword = true;
-  final String nodeEndPoint = 'http://192.168.137.46:3000/image';
-  final String signUpPoint = 'http://192.168.137.46:3000/signup';
+  bool _agreement = false;
+  final String nodeEndPoint = 'http://192.168.137.169:3000/image';
+  final String signUpPoint = 'http://192.168.137.169:3000/signup';
   var bloodGroups = ['O−', 'O+', 'A−', 'A+', 'B−', 'B+', 'AB−', 'AB+'];
   String selectedBloodGroup;
   bool isMale = true;
@@ -33,6 +37,10 @@ class _SignUpPageState extends State<SignUpPage> {
     Geolocator().getLastKnownPosition().then((curloc) {
       currentLocation = curloc;
     });
+    String name = widget.name;
+    String number = widget.number;
+    fullNameController.text = name;
+    phoneNumberController.text = number;
   }
 
   void _upload(
@@ -173,7 +181,7 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget bloodDropDown() {
     return Theme(
       data: ThemeData(
-        canvasColor: Color(0xFFC21807),
+        canvasColor: Theme.of(context).primaryColor,
       ),
       child: DropdownButton<String>(
         hint: Text('Select your blood type'),
@@ -201,7 +209,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Widget mySignUpBody() {
     return Container(
-      color: Color(0xFFC21807),
+      color: Theme.of(context).primaryColor,
       width: double.infinity,
       height: double.infinity,
       child: Center(
@@ -363,6 +371,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         child: TextFormField(
                           controller: phoneNumberController,
                           keyboardType: TextInputType.number,
+                          // initialValue: "widget.number",
                           validator: (value) {
                             if (value.isEmpty) {
                               return 'Please enter your Phone number';
@@ -536,6 +545,30 @@ class _SignUpPageState extends State<SignUpPage> {
                           ),
                         ],
                       ),
+                      Row(
+                        children: <Widget>[
+                          Checkbox(
+                            onChanged: (bool value) {
+                              setState(() {
+                                _agreement = value;
+                              });
+                            },
+                            value: _agreement,
+                          ),
+                          Text('I agree to the ',
+                              style: TextStyle(color: Colors.white)),
+                          InkWell(
+                            child: Text('terms and conditions.',
+                                style: TextStyle(color: Colors.blue)),
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => TermsPage()));
+                            },
+                          )
+                        ],
+                      ),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 16.0),
                         child: AnimatedContainer(
@@ -563,7 +596,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                   citizenshipBackImageFile != null &&
                                   citizenshipFrontFile != null &&
                                   !isLoading &&
-                                  selectedBloodGroup != null) {
+                                  selectedBloodGroup != null && _agreement) {
                                 setState(() {
                                   isLoading = true;
                                 });

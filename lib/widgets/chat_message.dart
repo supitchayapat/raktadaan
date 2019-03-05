@@ -50,7 +50,7 @@ class ChatMessage extends StatelessWidget {
                 Expanded(
                   child: Container(
                     decoration: new BoxDecoration(
-                      color: Color(0xFFC21807),
+                      color: Theme.of(context).primaryColor,
                       borderRadius: BorderRadius.all(Radius.circular(16.0)),
                     ),
                     child: Padding(

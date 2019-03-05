@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:raktadaan/screens/ambulances_screen.dart';
 import 'package:raktadaan/screens/blood_banks.dart';
+import 'package:raktadaan/screens/document_upload.dart';
 import 'package:raktadaan/screens/donate_screen.dart';
 import 'package:raktadaan/screens/events_page.dart';
 import 'package:raktadaan/screens/find_donors.dart';
 import 'package:raktadaan/screens/user_profile.dart';
-import 'package:raktadaan/test/test.dart';
 import 'package:raktadaan/widgets/custom_curve.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -51,7 +51,7 @@ class HomePageState extends State<HomePage> {
   Widget bloodDropDown() {
     return Theme(
       data: ThemeData(
-        canvasColor: Color(0xFFC21807),
+        canvasColor: Theme.of(context).primaryColor,
       ),
       child: DropdownButton<String>(
         //hint: Text('Select your blood type'),
@@ -93,16 +93,16 @@ class HomePageState extends State<HomePage> {
 
   Widget appBar() {
     return AppBar(
-      backgroundColor: Color(0xFFC21807),
+      backgroundColor: Theme.of(context).primaryColor,
       centerTitle: true,
       actions: <Widget>[
         IconButton(
           onPressed: () {
             Navigator.push(
-                context, MaterialPageRoute(builder: (context) => TestPage()));
+                context, MaterialPageRoute(builder: (context) => DocumentUpload()));
           },
-          icon: Icon(Icons.message),
-        )
+          icon: Icon(FontAwesomeIcons.fileSignature),
+        ),
       ],
       leading: InkWell(
         onTap: () {
@@ -125,13 +125,16 @@ class HomePageState extends State<HomePage> {
                 backgroundImage: (isLoggedIn == false || userId == null)
                     ? AssetImage('assets/images/face1.jpeg')
                     : NetworkImage(
-                        'http://192.168.137.46:3000/${userId.toString()}profile.jpg'),
+                        'http://192.168.137.169:3000/${userId.toString()}profile.jpg'),
               ),
             ),
           ),
         ),
       ),
-      title: Text('Raktadaan'),
+      title: Text(
+        'Raktadaan',
+        style: TextStyle(fontSize: 24),
+      ),
       elevation: 0,
     );
   }
@@ -150,65 +153,42 @@ class HomePageState extends State<HomePage> {
                   gradient: LinearGradient(
                     begin: Alignment.bottomCenter,
                     end: Alignment.topCenter,
-                    colors: [Color(0xFF7C0A02), Color(0xFFC21807)],
+                    colors: [Color(0xFF7C0A02), Theme.of(context).primaryColor],
                   ),
                 ),
-                child: Center(
-                  child: RaisedButton.icon(
-                    color: Colors.white,
-                    icon: Icon(FontAwesomeIcons.searchLocation),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8.0))),
-                    label: Text(
-                      'Find Donors',
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 18.0,
-                          fontFamily: 'Open Sans',
-                          fontWeight: FontWeight.bold),
+                child: Stack(
+                  children: <Widget>[
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      left: 0,
+                      child: Image(
+                          width: 100.0,
+                          height: 80.0,
+                          fit: BoxFit.fitHeight,
+                          image: new AssetImage('assets/images/logo_drop.png')),
                     ),
-                    onPressed: () {
-                      showPicker();
-                    },
-                  ),
-                  // child: Card(
-                  //   elevation: 10.0,
-                  //   shape: RoundedRectangleBorder(
-                  //     borderRadius: BorderRadius.circular(10.0),
-                  //   ),
-                  //   child: Container(
-                  //     width: 150.0,
-                  //     height: 40.0,
-                  //     decoration: BoxDecoration(
-                  //       color: Colors.white,
-                  //       border: Border.all(color: Color(0xFFC21807), width: 2.0),
-                  //       borderRadius: BorderRadius.circular(10.0),
-                  //     ),
-                  //     child: InkWell(
-                  //       onTap: () {
-                  //         //gotoFindDonors();
-                  //         showPicker();
-                  //       },
-                  //       child: Center(
-                  //           child: Row(
-                  //         mainAxisAlignment: MainAxisAlignment.center,
-                  //         children: <Widget>[
-                  //           Icon(
-                  //             Icons.search,
-                  //             color: Colors.black,
-                  //           ),
-                  //           Text(
-                  //             'Find Donors',
-                  //             style: TextStyle(
-                  //                 fontSize: 18.0,
-                  //                 color: Colors.black,
-                  //                 fontWeight: FontWeight.bold),
-                  //           ),
-                  //         ],
-                  //       )),
-                  //     ),
-                  //   ),
-                  // ),
+                    Center(
+                      child: RaisedButton.icon(
+                        color: Colors.white,
+                        icon: Icon(FontAwesomeIcons.searchLocation),
+                        shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.0))),
+                        label: Text(
+                          'Find Donors',
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 18.0,
+                              fontFamily: 'Open Sans',
+                              fontWeight: FontWeight.bold),
+                        ),
+                        onPressed: () {
+                          showPicker();
+                        },
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -248,7 +228,8 @@ class HomePageState extends State<HomePage> {
                                       children: <Widget>[
                                         Container(
                                           decoration: BoxDecoration(
-                                              color: Color(0xFFC21807),
+                                              color: Theme.of(context)
+                                                  .primaryColor,
                                               borderRadius:
                                                   BorderRadius.circular(8.0)),
                                         ),
@@ -256,7 +237,8 @@ class HomePageState extends State<HomePage> {
                                           decoration: BoxDecoration(
                                             image: DecorationImage(
                                                 colorFilter: ColorFilter.mode(
-                                                    Color(0xFFC21807)
+                                                    Theme.of(context)
+                                                        .primaryColor
                                                         .withOpacity(0.6),
                                                     BlendMode.dstATop),
                                                 image: ExactAssetImage(
@@ -302,7 +284,8 @@ class HomePageState extends State<HomePage> {
                                       children: <Widget>[
                                         Container(
                                           decoration: BoxDecoration(
-                                              color: Color(0xFFC21807),
+                                              color: Theme.of(context)
+                                                  .primaryColor,
                                               borderRadius:
                                                   BorderRadius.circular(8.0)),
                                         ),
@@ -310,7 +293,8 @@ class HomePageState extends State<HomePage> {
                                           decoration: BoxDecoration(
                                             image: DecorationImage(
                                                 colorFilter: ColorFilter.mode(
-                                                    Color(0xFFC21807)
+                                                    Theme.of(context)
+                                                        .primaryColor
                                                         .withOpacity(0.6),
                                                     BlendMode.dstATop),
                                                 image: ExactAssetImage(
@@ -365,7 +349,8 @@ class HomePageState extends State<HomePage> {
                                       children: <Widget>[
                                         Container(
                                           decoration: BoxDecoration(
-                                              color: Color(0xFFC21807),
+                                              color: Theme.of(context)
+                                                  .primaryColor,
                                               borderRadius:
                                                   BorderRadius.circular(8.0)),
                                         ),
@@ -373,7 +358,8 @@ class HomePageState extends State<HomePage> {
                                           decoration: BoxDecoration(
                                             image: DecorationImage(
                                                 colorFilter: ColorFilter.mode(
-                                                    Color(0xFFC21807)
+                                                    Theme.of(context)
+                                                        .primaryColor
                                                         .withOpacity(0.6),
                                                     BlendMode.dstATop),
                                                 image: ExactAssetImage(
@@ -419,7 +405,8 @@ class HomePageState extends State<HomePage> {
                                       children: <Widget>[
                                         Container(
                                           decoration: BoxDecoration(
-                                              color: Color(0xFFC21807),
+                                              color: Theme.of(context)
+                                                  .primaryColor,
                                               borderRadius:
                                                   BorderRadius.circular(8.0)),
                                         ),
@@ -427,7 +414,8 @@ class HomePageState extends State<HomePage> {
                                           decoration: BoxDecoration(
                                             image: DecorationImage(
                                                 colorFilter: ColorFilter.mode(
-                                                    Color(0xFFC21807)
+                                                    Theme.of(context)
+                                                        .primaryColor
                                                         .withOpacity(0.6),
                                                     BlendMode.dstATop),
                                                 image: ExactAssetImage(

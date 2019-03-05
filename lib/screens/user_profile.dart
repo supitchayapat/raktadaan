@@ -23,7 +23,7 @@ class UserProfileState extends State<UserProfile> {
   _setData() async {
     willDonate = preferences.getBool('online');
     final response = await http
-        .get("http://192.168.137.46:3000/willchanger?user_id=$userId");
+        .get("http://192.168.137.169:3000/willchanger?user_id=$userId");
     if (response.statusCode == 200) {
       print('successful');
       preferences.setBool('online', !willDonate);
@@ -62,7 +62,7 @@ class UserProfileState extends State<UserProfile> {
 
   Widget profileBody() {
     return Container(
-      color: Color(0xFFC21807),
+      color: Theme.of(context).primaryColor,
       child: Column(
         children: <Widget>[
           Expanded(
@@ -260,7 +260,7 @@ class UserProfileState extends State<UserProfile> {
                             image: (isLoggedIn == null && userId == null)
                                 ? AssetImage('assets/images/face1.jpeg')
                                 : NetworkImage(
-                                    'http://192.168.137.46:3000/${userId.toString()}profile.jpg'),
+                                    'http://192.168.137.169:3000/${userId.toString()}profile.jpg'),
                           ),
                         ),
                       ),
@@ -305,7 +305,7 @@ class UserProfileState extends State<UserProfile> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Profile'),
-        backgroundColor: Color(0xFFC21807),
+        backgroundColor: Theme.of(context).primaryColor,
         actions: <Widget>[
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -316,7 +316,7 @@ class UserProfileState extends State<UserProfile> {
       ),
       body: isLoggedIn == null
           ? Container(
-              color: Color(0xFFC21807),
+              color: Theme.of(context).primaryColor,
               child: Center(
                 child: CircularProgressIndicator(),
               ),
@@ -325,7 +325,7 @@ class UserProfileState extends State<UserProfile> {
               ? profileBody()
               : Container(
                   width: double.infinity,
-                  color: Color(0xFFC21807),
+                  color: Theme.of(context).primaryColor,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[

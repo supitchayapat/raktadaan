@@ -32,7 +32,7 @@ class AmbulancesPageState extends State<AmbulancesPage> {
 
   _fetchData() async {
     final response = await http
-        .get("http://192.168.137.46:3000/getambulance");
+        .get("http://192.168.137.169:3000/getambulance");
     if (response.statusCode == 200) {
       list = (json.decode(response.body) as List)
           .map((data) => Ambulance.fromJson(data))
@@ -92,7 +92,7 @@ class AmbulancesPageState extends State<AmbulancesPage> {
   //This is body
   Widget myBody() {
     return Container(
-        color: Color(0xFFC21807),
+        color: Theme.of(context).primaryColor,
         width: double.infinity,
         height: double.infinity,
         child: noAmbulances
@@ -122,7 +122,7 @@ class AmbulancesPageState extends State<AmbulancesPage> {
     Widget bloodDropDown() {
     return Theme(
       data: ThemeData(
-        canvasColor: Color(0xFFC21807),
+        canvasColor: Theme.of(context).primaryColor,
       ),
       child: DropdownButton<String>(
         hint: Text('Select your blood type'),

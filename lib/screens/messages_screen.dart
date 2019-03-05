@@ -66,7 +66,7 @@ class _MessagesPageState extends State<MessagesPage> {
         title: Text('Messages'),
       ),
       body: Container(
-        color: Color(0xFFC21807),
+        color: Theme.of(context).primaryColor,
         child: messages(),
       ),
     );

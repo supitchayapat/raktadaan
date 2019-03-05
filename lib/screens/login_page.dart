@@ -11,17 +11,17 @@ class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
 
   @override
-  _LoginPageState createState() => new _LoginPageState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage>
     with SingleTickerProviderStateMixin {
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  TextEditingController loginPhoneController = new TextEditingController();
-  TextEditingController loginPasswordController = new TextEditingController();
-  TextEditingController signUpNameController = new TextEditingController();
-  TextEditingController signUpNumberController = new TextEditingController();
+  TextEditingController loginPhoneController = TextEditingController();
+  TextEditingController loginPasswordController = TextEditingController();
+  TextEditingController signUpNameController = TextEditingController();
+  TextEditingController signUpNumberController = TextEditingController();
   bool isLoading = false;
   bool _obscureTextLogin = true;
 
@@ -30,7 +30,7 @@ class _LoginPageState extends State<LoginPage>
 
   Color left = Colors.black;
   Color right = Colors.white;
-  final String logInPoint = 'http://192.168.137.46:3000/login';
+  final String logInPoint = 'http://192.168.137.169:3000/login';
   _sendData(String username, String password) async {
     http.post(logInPoint,
         body: {"number": username, "password": password}).then((res) {
@@ -70,7 +70,7 @@ class _LoginPageState extends State<LoginPage>
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
+    return Scaffold(
       key: _scaffoldKey,
       body: NotificationListener<OverscrollIndicatorNotification>(
         onNotification: (overscroll) {
@@ -80,9 +80,9 @@ class _LoginPageState extends State<LoginPage>
           child: Container(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
-            decoration: new BoxDecoration(
-              gradient: new LinearGradient(
-                  colors: [Color(0xFF7C0A02), Color(0xFFC21807)],
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  colors: [Color(0xFF7C0A02), Theme.of(context).primaryColor],
                   begin: const FractionalOffset(0.0, 0.0),
                   end: const FractionalOffset(1.0, 1.0),
                   stops: [0.0, 1.0],
@@ -93,11 +93,11 @@ class _LoginPageState extends State<LoginPage>
               children: <Widget>[
                 Padding(
                   padding: EdgeInsets.only(top: 75.0),
-                  child: new Image(
+                  child: Image(
                       width: 250.0,
                       height: 191.0,
                       fit: BoxFit.fitHeight,
-                      image: new AssetImage('assets/images/logo_drop.png')),
+                      image: AssetImage('assets/images/logo_drop.png')),
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 20.0),
@@ -121,11 +121,11 @@ class _LoginPageState extends State<LoginPage>
                       }
                     },
                     children: <Widget>[
-                      new ConstrainedBox(
+                      ConstrainedBox(
                         constraints: const BoxConstraints.expand(),
                         child: _buildSignIn(context),
                       ),
-                      new ConstrainedBox(
+                      ConstrainedBox(
                         constraints: const BoxConstraints.expand(),
                         child: _buildSignUp(context),
                       ),
@@ -472,8 +472,13 @@ class _LoginPageState extends State<LoginPage>
                     ),
                   ),
                   onPressed: () {
+                    String name = signUpNameController.text.toString();
+                    String number =signUpNumberController.text.toString();
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => SignUpPage()));
+                        MaterialPageRoute(builder: (context) => SignUpPage(
+                          name: name,
+                          number: number,
+                        )));
                   },
                 ),
               ),
