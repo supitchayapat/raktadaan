@@ -12,7 +12,7 @@ class TermsPage extends StatelessWidget {
             color: Colors.white,
           ),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pop(context );
           },
         ),
       ),

@@ -93,11 +93,14 @@ class _LoginPageState extends State<LoginPage>
               children: <Widget>[
                 Padding(
                   padding: EdgeInsets.only(top: 75.0),
-                  child: Image(
-                      width: 250.0,
-                      height: 191.0,
-                      fit: BoxFit.fitHeight,
-                      image: AssetImage('assets/images/logo_drop.png')),
+                  child: Hero(
+                    tag: 'icon',
+                    child: Image(
+                        width: 250.0,
+                        height: 191.0,
+                        fit: BoxFit.fitHeight,
+                        image: AssetImage('assets/images/logo_drop.png')),
+                  ),
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 20.0),
@@ -473,12 +476,14 @@ class _LoginPageState extends State<LoginPage>
                   ),
                   onPressed: () {
                     String name = signUpNameController.text.toString();
-                    String number =signUpNumberController.text.toString();
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => SignUpPage(
-                          name: name,
-                          number: number,
-                        )));
+                    String number = signUpNumberController.text.toString();
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SignUpPage(
+                                  name: name,
+                                  number: number,
+                                )));
                   },
                 ),
               ),

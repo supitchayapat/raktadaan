@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:raktadaan/screens/certificate.dart';
 import 'package:raktadaan/screens/login_page.dart';
+import 'package:raktadaan/widgets/profile_tile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -69,201 +71,193 @@ class UserProfileState extends State<UserProfile> {
             child: Stack(
               alignment: Alignment.topCenter,
               children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(top: circleRadius / 2.0),
-                  child: Container(
-                    margin: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
-                    width: double.infinity,
-                    height: double.infinity,
-                    child: Card(
-                      color: Colors.white,
-                      child: Padding(
-                        padding: EdgeInsets.only(top: circleRadius / 2),
-                        child: Container(
-                          alignment: Alignment.topCenter,
-                          child: SingleChildScrollView(
-                            child: Column(
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    name,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 24),
-                                  ),
+                SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom : 20.0),
+                    child: Column(
+                      children: <Widget>[
+                        Container(
+                          width: circleRadius,
+                          height: circleRadius,
+                          decoration: ShapeDecoration(
+                              shape: CircleBorder(), color: Colors.white),
+                          child: Padding(
+                            padding: EdgeInsets.all(circleBorderWidth),
+                            child: DecoratedBox(
+                              decoration: ShapeDecoration(
+                                shape: CircleBorder(),
+                                image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: (isLoggedIn == null && userId == null)
+                                      ? AssetImage('assets/images/face1.jpeg')
+                                      : NetworkImage(
+                                          'http://192.168.137.169:3000/${userId.toString()}profile.jpg'),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    'Respect : ${credits.toString()}',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 24),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    'Number : $phoneNumber',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 24),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    'Blood Group : $bloodGrp',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 24),
-                                  ),
-                                ),
-                                // Padding(
-                                //   padding: const EdgeInsets.all(8.0),
-                                //   child: Row(
-                                //     children: <Widget>[
-                                //       Text(
-                                //         'Willing to Donate : ',
-                                //         style: TextStyle(
-                                //             color: Colors.black,
-                                //             fontFamily: 'Open Sans',
-                                //             fontWeight: FontWeight.bold,
-                                //             fontSize: 16),
-                                //       ),
-                                //       Expanded(
-                                //         child: InkWell(
-                                //           onTap: () {
-                                //             setState(() {
-                                //               willDonate = true;
-                                //             });
-                                //             preferences.setBool(
-                                //                 'willDonate', true);
-                                //           },
-                                //           child: Container(
-                                //             decoration: BoxDecoration(
-                                //                 borderRadius: BorderRadius.all(
-                                //                     Radius.circular(8.0)),
-                                //                 border: Border.all(
-                                //                     color: willDonate
-                                //                         ? Colors.black
-                                //                         : Colors.transparent,
-                                //                     width: 2)),
-                                //             height: 50,
-                                //             width: double.infinity,
-                                //             child: Row(
-                                //               mainAxisAlignment:
-                                //                   MainAxisAlignment.center,
-                                //               children: <Widget>[
-                                //                 Icon(Icons.done,
-                                //                     color: Colors.black),
-                                //                 Text(
-                                //                   'Yes',
-                                //                   style: TextStyle(
-                                //                       color: Colors.black,
-                                //                       fontFamily: 'Open Sans',
-                                //                       fontWeight:
-                                //                           FontWeight.bold,
-                                //                       fontSize: 14),
-                                //                 )
-                                //               ],
-                                //             ),
-                                //           ),
-                                //         ),
-                                //       ),
-                                //       Expanded(
-                                //         child: InkWell(
-                                //           onTap: () {
-                                //             setState(() {
-                                //               willDonate = false;
-                                //               preferences.setBool(
-                                //                   'willDonate', false);
-                                //             });
-                                //           },
-                                //           child: Container(
-                                //             decoration: BoxDecoration(
-                                //                 borderRadius: BorderRadius.all(
-                                //                     Radius.circular(8.0)),
-                                //                 border: Border.all(
-                                //                     color: !willDonate
-                                //                         ? Colors.black
-                                //                         : Colors.transparent,
-                                //                     width: 2)),
-                                //             height: 50,
-                                //             width: double.infinity,
-                                //             child: Row(
-                                //               mainAxisAlignment:
-                                //                   MainAxisAlignment.center,
-                                //               children: <Widget>[
-                                //                 Icon(Icons.clear,
-                                //                     color: Colors.black),
-                                //                 Text(
-                                //                   'No',
-                                //                   style: TextStyle(
-                                //                       color: Colors.black,
-                                //                       fontFamily: 'Open Sans',
-                                //                       fontWeight:
-                                //                           FontWeight.bold,
-                                //                       fontSize: 14),
-                                //                 )
-                                //               ],
-                                //             ),
-                                //           ),
-                                //         ),
-                                //       ),
-                                //     ],
-                                //   ),
-                                // ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: <Widget>[
-                                    Text(
-                                      'Willing to Donate : ',
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontFamily: 'Open Sans',
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16),
-                                    ),
-                                    Switch.adaptive(
-                                        value: willDonate,
-                                        inactiveThumbColor: Colors.red,
-                                        onChanged: (bool value) {
-                                          _setData();
-                                        }),
-                                  ],
-                                )
-                              ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ),
-                  ),
-                ),
-                Hero(
-                  tag: 'profile_image',
-                  child: Container(
-                    width: circleRadius,
-                    height: circleRadius,
-                    decoration: ShapeDecoration(
-                        shape: CircleBorder(), color: Colors.white),
-                    child: Padding(
-                      padding: EdgeInsets.all(circleBorderWidth),
-                      child: DecoratedBox(
-                        decoration: ShapeDecoration(
-                          shape: CircleBorder(),
-                          image: DecorationImage(
-                            fit: BoxFit.cover,
-                            image: (isLoggedIn == null && userId == null)
-                                ? AssetImage('assets/images/face1.jpeg')
-                                : NetworkImage(
-                                    'http://192.168.137.169:3000/${userId.toString()}profile.jpg'),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            name,
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 24,
+                                color: Colors.white),
                           ),
                         ),
-                      ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Card(
+                            elevation: 5,
+                            child: Container(
+                              padding: EdgeInsets.all(8.0),
+                              child: Column(
+                                children: <Widget>[
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: <Widget>[
+                                      ProfileTile(
+                                        title: credits.toString(),
+                                        subtitle: "Respect",
+                                      ),
+                                      ProfileTile(
+                                        title: bloodGrp,
+                                        subtitle: "Blood Group",
+                                      ),
+                                      ProfileTile(
+                                        title: phoneNumber,
+                                        subtitle: "Number",
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: <Widget>[
+                                      Text(
+                                        'Willing to Donate : ',
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontFamily: 'Open Sans',
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16),
+                                      ),
+                                      Switch.adaptive(
+                                          value: willDonate,
+                                          inactiveThumbColor: Colors.red,
+                                          onChanged: (bool value) {
+                                            _setData();
+                                          }),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding:
+                              const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 0.0),
+                          child: Card(
+                            elevation: 5,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                children: <Widget>[
+                                  InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  Certificate()));
+                                    },
+                                    child: Container(
+                                      width: 70,
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(context).primaryColor,
+                                        border: Border.all(
+                                            width: 3,
+                                            color:
+                                                Theme.of(context).primaryColor),
+                                        borderRadius:
+                                            BorderRadius.circular(8.0),
+                                        image: DecorationImage(
+                                          fit: BoxFit.fitHeight,
+                                          image: AssetImage(
+                                              'assets/images/winner.png'),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Text(
+                                    'Share your certificate',
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontFamily: 'Open Sans',
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16),
+                                  ),
+                                  InkWell(
+                                    onTap: () {
+                                      print('tapped');
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  Certificate()));
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        children: <Widget>[
+                                          Expanded(
+                                            child:
+                                                Icon(FontAwesomeIcons.facebook),
+                                          ),
+                                          Expanded(
+                                            child:
+                                                Icon(FontAwesomeIcons.linkedin),
+                                          ),
+                                          Expanded(
+                                            child:
+                                                Icon(FontAwesomeIcons.twitter),
+                                          ),
+                                          Expanded(
+                                            child:
+                                                Icon(FontAwesomeIcons.shareAlt),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        RaisedButton(
+                          elevation: 5,
+                          color: Colors.white,
+                          shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8.0))),
+                          onPressed: () {},
+                          child: Text(
+                            'REDEEM',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18.0,
+                              fontFamily: 'Open Sans',
+                            ),
+                          ),
+                        )
+                      ],
                     ),
                   ),
                 ),
@@ -306,12 +300,7 @@ class UserProfileState extends State<UserProfile> {
       appBar: AppBar(
         title: Text('Profile'),
         backgroundColor: Theme.of(context).primaryColor,
-        actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Icon(Icons.edit),
-          )
-        ],
+        centerTitle: true,
         elevation: 0,
       ),
       body: isLoggedIn == null

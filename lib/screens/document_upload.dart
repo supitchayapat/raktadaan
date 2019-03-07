@@ -13,7 +13,7 @@ class DocumentUpload extends StatefulWidget {
 class _DocumentUploadState extends State<DocumentUpload> {
   File documentFile;
   final _formKey = GlobalKey<FormState>();
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final fullNameController = TextEditingController();
   final phoneNumberController = TextEditingController();
@@ -38,7 +38,8 @@ class _DocumentUploadState extends State<DocumentUpload> {
         isLoading = false;
       });
       if (res.statusCode == 200) {
-        Navigator.pop(context);
+        print('done');
+        _showDialog();
       } else {
         _scaffoldKey.currentState.showSnackBar(SnackBar(
           content: Text('Something went wrong'),
@@ -50,6 +51,44 @@ class _DocumentUploadState extends State<DocumentUpload> {
         isLoading = false;
       });
     });
+  }
+
+  Future<bool> _willPopCallback() async {
+    return false;
+  }
+
+  void _showDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return WillPopScope(
+          onWillPop: _willPopCallback,
+          child: AlertDialog(
+            backgroundColor: Theme.of(context).primaryColor,
+            title: Text(
+              "Submitted Successfully!",
+              style: TextStyle(color: Colors.white),
+            ),
+            content: Text(
+              "You application has been submitted successfully. Please wait till we review the legitimacy of your claim.",
+              style: TextStyle(color: Colors.white),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("Okay",
+                    style: TextStyle(
+                        color: Colors.green, fontWeight: FontWeight.bold)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   SharedPreferences preferences;

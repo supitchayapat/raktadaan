@@ -6,6 +6,7 @@ import 'package:raktadaan/screens/document_upload.dart';
 import 'package:raktadaan/screens/donate_screen.dart';
 import 'package:raktadaan/screens/events_page.dart';
 import 'package:raktadaan/screens/find_donors.dart';
+import 'package:raktadaan/screens/login_page.dart';
 import 'package:raktadaan/screens/user_profile.dart';
 import 'package:raktadaan/widgets/custom_curve.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -96,41 +97,49 @@ class HomePageState extends State<HomePage> {
       backgroundColor: Theme.of(context).primaryColor,
       centerTitle: true,
       actions: <Widget>[
-        IconButton(
-          onPressed: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => DocumentUpload()));
-          },
-          icon: Icon(FontAwesomeIcons.fileSignature),
-        ),
+        (isLoggedIn == false || userId == null)
+            ? IconButton(
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => LoginPage()));
+                },
+                icon: Icon(FontAwesomeIcons.signInAlt),
+              )
+            : IconButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => DocumentUpload()));
+                },
+                icon: Icon(FontAwesomeIcons.fileSignature),
+              ),
       ],
-      leading: InkWell(
-        onTap: () {
-          gotoProfile();
-        },
-        child: Hero(
-          tag: 'profile_image1',
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.black,
-                border: Border.all(
-                  color: Colors.white,
-                  width: 3.0,
+      leading: (isLoggedIn == false || userId == null)
+          ? Container()
+          : InkWell(
+              onTap: () {
+                gotoProfile();
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.black,
+                    border: Border.all(
+                      color: Colors.white,
+                      width: 3.0,
+                    ),
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: NetworkImage(
+                          'http://192.168.137.169:3000/${userId.toString()}profile.jpg'),
+                    ),
+                  ),
                 ),
               ),
-              child: CircleAvatar(
-                backgroundImage: (isLoggedIn == false || userId == null)
-                    ? AssetImage('assets/images/face1.jpeg')
-                    : NetworkImage(
-                        'http://192.168.137.169:3000/${userId.toString()}profile.jpg'),
-              ),
             ),
-          ),
-        ),
-      ),
       title: Text(
         'Raktadaan',
         style: TextStyle(fontSize: 24),
@@ -162,11 +171,15 @@ class HomePageState extends State<HomePage> {
                       top: 0,
                       right: 0,
                       left: 0,
-                      child: Image(
-                          width: 100.0,
-                          height: 80.0,
-                          fit: BoxFit.fitHeight,
-                          image: new AssetImage('assets/images/logo_drop.png')),
+                      child: Hero(
+                        tag: 'icon',
+                        child: Image(
+                            width: 100.0,
+                            height: 80.0,
+                            fit: BoxFit.fitHeight,
+                            image:
+                                new AssetImage('assets/images/logo_drop.png')),
+                      ),
                     ),
                     Center(
                       child: RaisedButton.icon(

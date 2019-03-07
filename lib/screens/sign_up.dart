@@ -82,7 +82,7 @@ class _SignUpPageState extends State<SignUpPage> {
         isLoading = false;
       });
       if (res.statusCode == 200) {
-        Navigator.pop(context);
+        _showDialog();
       } else {
         _scaffoldKey.currentState.showSnackBar(SnackBar(
           content: Text('Something went wrong'),
@@ -94,6 +94,44 @@ class _SignUpPageState extends State<SignUpPage> {
         isLoading = false;
       });
     });
+  }
+
+  Future<bool> _willPopCallback() async {
+    return false;
+  }
+
+  void _showDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return WillPopScope(
+          onWillPop: _willPopCallback,
+          child: AlertDialog(
+            backgroundColor: Theme.of(context).primaryColor,
+            title: Text(
+              "Signed Up Succesfully!",
+              style: TextStyle(color: Colors.white),
+            ),
+            content: Text(
+              "Happy Helping!",
+              style: TextStyle(color: Colors.white),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("Okay",
+                    style: TextStyle(
+                        color: Colors.green, fontWeight: FontWeight.bold)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   picker(String source, String ofWhat) async {
@@ -596,7 +634,8 @@ class _SignUpPageState extends State<SignUpPage> {
                                   citizenshipBackImageFile != null &&
                                   citizenshipFrontFile != null &&
                                   !isLoading &&
-                                  selectedBloodGroup != null && _agreement) {
+                                  selectedBloodGroup != null &&
+                                  _agreement) {
                                 setState(() {
                                   isLoading = true;
                                 });

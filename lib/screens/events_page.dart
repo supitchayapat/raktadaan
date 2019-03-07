@@ -12,16 +12,16 @@ class Eventspage extends StatefulWidget {
 class EventspageState extends State<Eventspage> {
   List<Event> events = [
     Event(
-      date: '2 April 2018',
-      description: 'Blood Donation event organized by Red Cross Society.',
-      place: 'Pulchowk',
-      time: '3:20 PM',
+      date: '३० फाल्गुन २०७५',
+      description: 'रेड क्रस सोसाइटी द्वारा आयोजित रक्तदान कार्यक्रम |',
+      place: 'पाटन',
+      time: '१२ : ०० PM',
     ),
     Event(
-      date: '1 April 2018',
-      description: 'Awareness campaign event organized by Nepal Scout Society.',
-      place: 'Maharajgunj',
-      time: '8:10 AM',
+      date: '२९  फाल्गुन २०७५',
+      description: 'नेपाल स्काउट सोसाइटीले युवा जन चेतना कार्यक्रम आयोजना गर्दै ।',
+      place: 'बुटवल',
+      time: '३ : ००  AM',
     )
   ];
 
